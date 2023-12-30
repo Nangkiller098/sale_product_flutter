@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:localstorage/localstorage.dart';
 import 'package:sale_product_flutter/models/request/LoginRequest.dart';
+import 'package:sale_product_flutter/models/response/LoginResponse.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -14,6 +18,7 @@ class _LoginScreenStateState extends State<LoginScreen> {
   final _keyForm = GlobalKey<FormState>();
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
+  final storage = LocalStorage('USER_SESSION');
   bool isLoading = false;
 
   login() async {
@@ -29,12 +34,17 @@ class _LoginScreenStateState extends State<LoginScreen> {
     var url = Uri.parse("https://dummyjson.com/auth/login");
     var response = await http.post(url, body: req.toJson());
     if (response.statusCode == 200) {
-      if (kDebugMode) {
-        print("Success");
-      }
+      var map = jsonDecode(response.body);
+      var user = LoginResponse.fromJson(map);
+      // print(user);
       setState(() {
         isLoading = false;
       });
+      storage.setItem("USER_NAME", user.username);
+      storage.setItem("USER_EMAIL", user.email);
+      storage.setItem("USER_TOKEN", user.token);
+      // ignore: use_build_context_synchronously
+      Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
     } else {
       if (kDebugMode) {
         print("Can not Loin");
