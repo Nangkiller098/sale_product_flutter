@@ -1,8 +1,8 @@
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:sale_product_flutter/models/request/LoginRequest.dart';
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -14,43 +14,41 @@ class _LoginScreenStateState extends State<LoginScreen> {
   final _keyForm = GlobalKey<FormState>();
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
-  bool  isLoading =false;
+  bool isLoading = false;
 
-  login() async{
+  login() async {
     setState(() {
-      isLoading=true;
+      isLoading = true;
     });
-    LoginRequest req= LoginRequest();
-    var username= _usernameController.text;
+    LoginRequest req = LoginRequest();
+    var username = _usernameController.text;
     var password = _passwordController.text;
-    req.password=password;
-    req.username=username;
-    
-    var url =Uri.parse("https://dummyjson.com/auth/login");
-    var response = await http.post(url,body:req.toJson());
-    if(response.statusCode==200)
-      {
-        if (kDebugMode) {
-          print("Success");
-        }
+    req.password = password;
+    req.username = username;
+
+    var url = Uri.parse("https://dummyjson.com/auth/login");
+    var response = await http.post(url, body: req.toJson());
+    if (response.statusCode == 200) {
+      if (kDebugMode) {
+        print("Success");
+      }
+      setState(() {
+        isLoading = false;
+      });
+    } else {
+      if (kDebugMode) {
+        print("Can not Loin");
         setState(() {
-          isLoading=false;
+          isLoading = false;
         });
-      }else
-        {
-          if (kDebugMode) {
-            print("Can not Loin");
-            setState(() {
-              isLoading=false;
-            });
-          }
-        }
+      }
+    }
   }
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    isLoading =false;
+    isLoading = false;
   }
 
   @override
@@ -108,35 +106,36 @@ class _LoginScreenStateState extends State<LoginScreen> {
               },
             ),
           ),
-         isLoading ==true ? Container(
-           decoration: const BoxDecoration(color: Colors.teal),
-           width: double.infinity,
-           padding: const EdgeInsets.all(16),
-           margin: const EdgeInsets.only(top: 10, left: 16, right: 16),
-           child: Center(
-             child: CircularProgressIndicator(
-               color: Theme.of(context).primaryColor,
-             ),
-           ),
-         ):
-         InkWell(
-            onTap: () {
-              if (_keyForm.currentState!.validate()) {
-                login();
-              }
-            },
-            child: Container(
-              decoration: const BoxDecoration(color: Colors.teal),
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              margin: const EdgeInsets.only(top: 10, left: 16, right: 16),
-              child: const Text(
-                "Login",
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-          ),
+          isLoading == true
+              ? Container(
+                  decoration: const BoxDecoration(color: Colors.teal),
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(16),
+                  margin: const EdgeInsets.only(top: 10, left: 16, right: 16),
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                )
+              : InkWell(
+                  onTap: () {
+                    if (_keyForm.currentState!.validate()) {
+                      login();
+                    }
+                  },
+                  child: Container(
+                    decoration: const BoxDecoration(color: Colors.teal),
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    margin: const EdgeInsets.only(top: 10, left: 16, right: 16),
+                    child: const Text(
+                      "Login",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
           Container(
               padding: const EdgeInsets.only(top: 10, right: 20),
               width: double.infinity,
