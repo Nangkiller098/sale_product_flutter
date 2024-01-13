@@ -19,10 +19,10 @@ class Products {
     id = json['id'];
     title = json['title'];
     description = json['description'];
-    price = json['price'];
+    price = double.parse(json['price'].toString());
     discountPercentage = json['discountPercentage'];
-    rating = json['rating'];
-    stock = json['stock'];
+    rating = double.parse(json['rating'].toString());
+    stock = double.parse(json['stock'].toString());
     brand = json['brand'];
     category = json['category'];
     thumbnail = json['thumbnail'];
@@ -31,10 +31,10 @@ class Products {
   int? id;
   String? title;
   String? description;
-  int? price;
+  double? price;
   double? discountPercentage;
   double? rating;
-  int? stock;
+  double? stock;
   String? brand;
   String? category;
   String? thumbnail;
