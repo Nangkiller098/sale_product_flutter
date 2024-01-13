@@ -5,7 +5,6 @@ import 'package:sale_product_flutter/components/loading_component.dart';
 import 'package:sale_product_flutter/models/response/Products.dart';
 import 'package:http/http.dart' as http;
 import 'package:sale_product_flutter/screens/product_category_screen.dart';
-import 'package:sale_product_flutter/screens/product_detail_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -18,6 +17,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Products> productList = [];
   List<String> categories = [];
   bool isLoading = false;
+  bool isgrid = false;
 
   @override
   void initState() {
@@ -49,6 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   getAllCategories() async {
+    categories.add("All");
     var url = Uri.parse("https://dummyjson.com/products/categories");
     var response = await http.get(url);
     if (response.statusCode == 200) {
@@ -113,41 +114,131 @@ class _HomeScreenState extends State<HomeScreen> {
                             );
                           }),
                     ),
-                    ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: productList.length,
-                        itemBuilder: (BuildContext context, index) {
-                          var product = productList[index];
-                          return Container(
-                            margin: const EdgeInsets.only(top: 5),
-                            decoration:
-                                const BoxDecoration(color: Colors.black12),
-                            child: ListTile(
-                              onTap: () {
-                                // print("PRODUCT ID ${product.id}");
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            ProductDetailScreen(
-                                              products: product,
-                                            )));
-                              },
-                              leading: Image.network(
-                                "${product.thumbnail}",
-                                width: 100,
-                                height: 150,
+                    Container(
+                      height: 100,
+                      padding: const EdgeInsets.only(
+                          left: 16, right: 16, top: 20, bottom: 16),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            "Products",
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          Row(
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              ProductCategoryScreen(
+                                                categoryName: "All",
+                                              )));
+                                },
+                                child: Text(
+                                  "View More",
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      color: Theme.of(context).primaryColor),
+                                ),
                               ),
-                              title: Text("${product.title}"),
-                              subtitle: Text("${product.description}"),
-                            ),
-                          );
-                        }),
+                              InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    isgrid = !isgrid;
+                                  });
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 10),
+                                  child: Image.asset(
+                                    isgrid == true
+                                        ? "assets/images/app.png"
+                                        : "assets/images/list.png",
+                                    width: 24,
+                                    height: 24,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    isgrid == false
+                        ? ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: productList.length,
+                            itemBuilder: (BuildContext context, index) {
+                              var product = productList[index];
+                              return Container(
+                                margin: const EdgeInsets.only(top: 5),
+                                decoration:
+                                    const BoxDecoration(color: Colors.black12),
+                                child: ListTile(
+                                  onTap: () {},
+                                  leading: Image.network(
+                                    "${product.thumbnail}",
+                                    width: 100,
+                                    height: 150,
+                                  ),
+                                  title: Text("${product.title}"),
+                                  subtitle: Text("${product.description}"),
+                                ),
+                              );
+                            })
+                        : GridView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: productList.length,
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    crossAxisSpacing: 4,
+                                    mainAxisSpacing: 4),
+                            itemBuilder: (BuildContext context, index) {
+                              var product = productList[index];
+                              return Container(
+                                decoration: BoxDecoration(
+                                    color: Colors.black.withOpacity(0.03)),
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Image.network(
+                                      "${product.thumbnail}",
+                                      width: 80,
+                                      height: 100,
+                                    ),
+                                    Center(
+                                      child: Text("${product.title}"),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 8.0, right: 8),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                              "${product.discountPercentage!.toStringAsFixed(0)} %"),
+                                          Text(
+                                            "\$ ${product.price!.toStringAsFixed(2)}",
+                                            style: const TextStyle(
+                                                color: Colors.red),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }),
                   ],
                 ),
-              ),
-            ),
+              )),
     );
   }
 }
