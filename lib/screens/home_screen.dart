@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:sale_product_flutter/components/loading_component.dart';
 import 'package:sale_product_flutter/models/response/Products.dart';
 import 'package:http/http.dart' as http;
+import 'package:sale_product_flutter/screens/search_product_screen.dart';
 import 'package:sale_product_flutter/screens/product_category_screen.dart';
+import 'package:sale_product_flutter/screens/product_detail_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -70,8 +72,22 @@ class _HomeScreenState extends State<HomeScreen> {
           style: TextStyle(color: Colors.white),
           textAlign: TextAlign.center,
         ),
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const SearchProduct()));
+              },
+              icon: const Icon(
+                Icons.search,
+                color: Colors.white,
+              ))
+        ],
       ),
-      body: isLoading == true
+      body: 
+      isLoading == true
           ? const LoadingComponent()
           : RefreshIndicator(
               onRefresh: () async {
@@ -178,7 +194,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                 decoration:
                                     const BoxDecoration(color: Colors.black12),
                                 child: ListTile(
-                                  onTap: () {},
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                ProductDetailScreen(
+                                                  products: product,
+                                                )));
+                                  },
                                   leading: Image.network(
                                     "${product.thumbnail}",
                                     width: 100,
@@ -207,10 +231,21 @@ class _HomeScreenState extends State<HomeScreen> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceAround,
                                   children: [
-                                    Image.network(
-                                      "${product.thumbnail}",
-                                      width: 80,
-                                      height: 100,
+                                    InkWell(
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ProductDetailScreen(
+                                                      products: product,
+                                                    )));
+                                      },
+                                      child: Image.network(
+                                        "${product.thumbnail}",
+                                        width: 80,
+                                        height: 100,
+                                      ),
                                     ),
                                     Center(
                                       child: Text("${product.title}"),

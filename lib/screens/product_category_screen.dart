@@ -78,7 +78,6 @@ class _ProductCategoryScreenState extends State<ProductCategoryScreen> {
                     decoration: const BoxDecoration(color: Colors.black12),
                     child: ListTile(
                       onTap: () {
-                        // print("PRODUCT ID ${product.id}");
                         Navigator.push(
                             context,
                             MaterialPageRoute(
